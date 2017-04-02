@@ -10,11 +10,11 @@
 	import fl.controls.Label;
 	
 	
-	public class BtnStart extends MovieClip {
+	public class BtnBack extends MovieClip {
 		var btnOuter:Sprite = new Sprite();
 		var btnInner:Sprite = new Sprite();
 		var lblBtn:Label = new Label();
-		public function BtnStart() {
+		public function BtnBack() {
 			
 			
 		btnOuter.graphics.beginFill(0x0000FF);
@@ -23,7 +23,7 @@
 		btnInner.graphics.beginFill(0xFFCC00);
 		btnInner.graphics.drawRect(25,10,150,20);
 		addChild(btnInner);
-			lblBtn.text="Start!";
+			lblBtn.text="Back";
 			lblBtn.x=85;
 			lblBtn.y=10;
 			lblBtn.width=40;

@@ -26,7 +26,6 @@
 			lblBtn.text="Start!";
 			lblBtn.x=85;
 			lblBtn.y=10;
-			lblBtn.width=40;
 			addChild(lblBtn);
 			 
 			}

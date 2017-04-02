@@ -13,7 +13,7 @@
 	import fl.controls.CheckBox;
 	import fl.controls.Label;
 
-	public class Game6 extends MovieClip {
+	public class Game7 extends MovieClip {
 		var rbgPokemon:RadioButtonGroup=new RadioButtonGroup("Pokemon");
 		var rbgControls:RadioButtonGroup=new RadioButtonGroup("Controls");
 		var rbgMode:RadioButtonGroup=new RadioButtonGroup("Mode");
@@ -28,9 +28,9 @@
 		var rbMouse:RadioButton = new RadioButton();
 		var rbClassic:RadioButton = new RadioButton();
 		var rbSurvival:RadioButton = new RadioButton();
-		var rbEasy:RadioButton = new RadioButton();
-		var rbMedium:RadioButton = new RadioButton();
+		var rbNormal:RadioButton = new RadioButton();
 		var rbHard:RadioButton = new RadioButton();
+		var rbInsane:RadioButton = new RadioButton();
 		var lblPokemon:Label = new Label();
 		var lblControls:Label = new Label();
 		var lblMode:Label = new Label();
@@ -46,10 +46,11 @@
 		var dAnimVelY:Number=4;
 		var tmrAnimMove:Timer=new Timer(25);
 		var tmrSpawn:Timer=new Timer(50);
-		var tmrInterval:Timer=new Timer(1000);
+		//var tmrInterval:Timer=new Timer(1000);
 		var titleScreen:TitleScreen = new TitleScreen();
 		var imgInstruction:ImgInstruction = new ImgInstruction();
 		var pokeBall:ImgPokeBall;
+		var masterBall:ImgMasterBall;
 		var animPokeBall:AnimPokeBall=new AnimPokeBall  ;
 		var imgCursor:ImgCursor = new ImgCursor();
 		var imgPikachu:ImgPikachu = new ImgPikachu();
@@ -66,9 +67,30 @@
 		var dVelY:Number;
 		var nRemainderX:int;
 		var nRemainderY:int;
+		var mouseBorder:Sprite = new Sprite();
+		var tmrClock:Timer=new Timer(1000);
+		var nSec:int=20;
+		var txtTimeRemaining:TextField = new TextField();
+		var txtNumBalls:TextField = new TextField();
+		var txtFormat:TextFormat = new TextFormat();
+		var newFont = new Font1();
+		var gameBackground:GameBackground = new GameBackground();
 
 
-		public function Game6() {
+		public function Game7() {
+			
+			gameBackground.x=600;
+			gameBackground.y=600;
+			gameBackground.height=400;
+			gameBackground.width=550;
+			gameBackground.alpha=0.65;
+			addChild(gameBackground);
+
+			mouseBorder.graphics.lineStyle(1, 0x000000);
+			mouseBorder.graphics.drawCircle(0,0,15);
+			addChild(mouseBorder);
+			mouseBorder.x=600;
+			mouseBorder.y=600;
 
 			rbPikachu.move(600, 600);
 			rbPikachu.label="Pikachu";
@@ -115,20 +137,20 @@
 			rbSurvival.group=rbgMode;
 			addChild(rbSurvival);
 
-			rbEasy.move(600, 600);
-			rbEasy.label="Easy";
-			rbEasy.group=rbgDifficulty;
-			addChild(rbEasy);
-
-			rbMedium.move(600, 600);
-			rbMedium.label="Medium";
-			rbMedium.group=rbgDifficulty;
-			addChild(rbMedium);
+			rbNormal.move(600, 600);
+			rbNormal.label="Normal";
+			rbNormal.group=rbgDifficulty;
+			addChild(rbNormal);
 
 			rbHard.move(600, 600);
 			rbHard.label="Hard";
 			rbHard.group=rbgDifficulty;
 			addChild(rbHard);
+
+			rbInsane.move(600, 600);
+			rbInsane.label="Insane";
+			rbInsane.group=rbgDifficulty;
+			addChild(rbInsane);
 
 			lblPokemon.move(600,600);
 			lblPokemon.text="Choose Your Pokemon!";
@@ -215,6 +237,26 @@
 			animPokeBall.height=40;
 			addChild(animPokeBall);
 
+			txtFormat.size=10;
+			txtFormat.font=newFont.fontName;
+			txtTimeRemaining.defaultTextFormat=txtFormat;
+			txtTimeRemaining.embedFonts=true;
+			txtTimeRemaining.antiAliasType=AntiAliasType.ADVANCED;
+			txtTimeRemaining.x=20;
+			txtTimeRemaining.y=20;
+			txtTimeRemaining.width=300;
+			txtTimeRemaining.textColor=0x0000FF;
+			addChild(txtTimeRemaining);
+
+			txtNumBalls.defaultTextFormat=txtFormat;
+			txtNumBalls.embedFonts=true;
+			txtNumBalls.antiAliasType=AntiAliasType.ADVANCED;
+			txtNumBalls.x=270;
+			txtNumBalls.y=20;
+			txtNumBalls.width=300;
+			txtNumBalls.textColor=0x0000FF;
+			addChild(txtNumBalls);
+
 			btnStart.btnOuter.addEventListener(MouseEvent.MOUSE_OVER, changeOver);//These event listeners make the button light up
 			btnStart.btnOuter.addEventListener(MouseEvent.MOUSE_OUT, changeOut);
 			btnStart.addEventListener(MouseEvent.CLICK, Instructions);
@@ -282,9 +324,9 @@
 			rbTwo.move(600,600);
 			rbClassic.move(600,600);
 			rbSurvival.move(600,600);
-			rbEasy.move(600,600);
-			rbMedium.move(600,600);
+			rbNormal.move(600,600);
 			rbHard.move(600,600);
+			rbInsane.move(600,600);
 			rbMouse.move(600,600);
 			rbArrowKeys.move(600,600);
 
@@ -370,12 +412,18 @@
 
 			imgPikachu.x=60;
 			imgPikachu.y=160;
+			imgPikachu.width=43.6;
+			imgPikachu.height=49.5;
 
 			imgOnix.x=60;
 			imgOnix.y=220;
+			imgOnix.width=48.1;
+			imgOnix.height=53.0;
 
 			imgTogepi.x=60;
 			imgTogepi.y=280;
+			imgTogepi.width=41.5;
+			imgTogepi.height=49.7;
 
 			imgMouse.x=275;
 			imgMouse.y=155;
@@ -402,23 +450,33 @@
 			rbTwo.move(40, 60);
 			rbClassic.move(230, 40);
 			rbSurvival.move(230,60);
-			rbEasy.move(375, 40);
-			rbMedium.move(375,60);
-			rbHard.move(375,80);
+			rbNormal.move(375, 40);
+			rbHard.move(375,60);
+			rbInsane.move(375,80);
 			rbArrowKeys.move(355,155);
 			rbMouse.move(240,155);
 
 			tmrAnimMove.removeEventListener("timer", animationTimer);
 		}
 		function Game(e:MouseEvent):void {
+			
+			gameBackground.x=0;
+			gameBackground.y=0;
+			
 			imgPikachu.x=600;
 			imgPikachu.y=600;
+			imgPikachu.width=23.6;
+			imgPikachu.height=29.5;
 
 			imgOnix.x=600;
 			imgOnix.y=600;
+			imgOnix.width=25.1;
+			imgOnix.height=30;
 
 			imgTogepi.x=600;
 			imgTogepi.y=600;
+			imgTogepi.width=21.5;
+			imgTogepi.height=29.7;
 
 			imgMouse.x=600;
 			imgMouse.y=600;
@@ -445,17 +503,20 @@
 			rbTwo.move(600, 600);
 			rbClassic.move(600, 600);
 			rbSurvival.move(600,600);
-			rbEasy.move(600, 600);
-			rbMedium.move(600,600);
+			rbNormal.move(600, 600);
 			rbHard.move(600,600);
+			rbInsane.move(600,600);
 			rbArrowKeys.move(600,600);
 			rbMouse.move(600,600);
 
-			tmrSpawn.start();
+			stage.addEventListener(Event.ENTER_FRAME, followmouse);
 
-			tmrSpawn.addEventListener("timer", timerFunction);
-			tmrInterval.start();
-			tmrInterval.addEventListener("timer", test);
+			tmrClock.addEventListener("timer", timerClock);
+			tmrClock.start();
+
+
+			tmrSpawn.addEventListener("timer", spawningTimer);
+			tmrSpawn.start();
 
 
 		}
@@ -468,7 +529,7 @@
 			e.target.transform.colorTransform=new ColorTransform(0,0,0,1,0,0,255,-1);
 
 		}
-		function animationTimer(event:TimerEvent):void {
+		function animationTimer(event:TimerEvent):void {//A timer to move the objects in the instruction page
 			animPokeBall.x-=1.5;
 			animPokeBall.y+=1.5;
 
@@ -493,18 +554,16 @@
 				tmrAnimMove.start();
 			}
 		}
-		function test(e:TimerEvent):void {
-			trace(tmrInterval.currentCount);
-		}
-		public function timerFunction(e:TimerEvent):void {
+		public function spawningTimer(e:TimerEvent):void {//A timer to create the pokeballs
 			//trace(tmrSpawn.currentCount);
 			i=0;
-			
+
 			if (nNumBalls<9) {
 				if (tmrSpawn.currentCount==1) {
 					nX=Math.random()*460+10;
 					nY=Math.random()*360+10;
 					pokeBall = new ImgPokeBall();
+
 					pokeBall.height=30;
 					pokeBall.width=30;
 					pokeBall.x=nX;
@@ -512,25 +571,71 @@
 					addChild(pokeBall);
 
 					arBalls.push(pokeBall);
-					
+
 
 					nNumBalls++;
 					addChild(arBalls[i]);
 					i++;
-					
+
 
 				}
-				if (tmrInterval.currentCount==1) {//For an exact 20 seconds, since working with the 50 milliseconds doesn't work well
-					
-					tmrSpawn.reset();
-					tmrSpawn.start();
-					tmrInterval.reset();
-					tmrInterval.start();
+
+			}
+			if (nNumBalls==9) {
+
+				if (tmrClock.currentCount==20) {// The 10th ball will spawn the "Master Ball"
+
+					nX=Math.random()*460+10;
+					nY=Math.random()*360+10;
+					masterBall = new ImgMasterBall();
+					masterBall.width=30;
+					masterBall.height=30;
+					masterBall.x=nX;
+					masterBall.y=nY;
+					addChild(masterBall);
+					arBalls.push(masterBall);
+					nNumBalls++;
+					trace(nNumBalls);
+					addChild(arBalls[i]);
+					i++;
 				}
 			}
+			if (tmrClock.currentCount==20) {//For an exact 20 seconds, since working with the 50 milliseconds doesn't work well
 
-			
+				tmrSpawn.reset();
+				tmrSpawn.start();
+				tmrClock.reset();
+				tmrClock.start();
+
+			}
+
 		}
-		
+		public function timerClock(e:TimerEvent):void {//Shows the time until the next ball spawns, also shows how many balls are on the stage
+			trace(tmrClock.currentCount);
+			txtNumBalls.text="Number of balls spawned: "+String(nNumBalls);
+			nSec--;
+			if(nNumBalls<10) {
+			txtTimeRemaining.text="Time until next ball: "+String(nSec);
+			if (nSec==0) {
+				nSec=20;
+			}
+			} else if(nNumBalls==10) {
+				txtTimeRemaining.text="Time until win: "+String(nSec);
+			}
+		}
+		function followmouse(e:Event):void {//images follow mouse, hit test
+			imgPikachu.x=mouseX;
+			imgPikachu.y=mouseY;
+			mouseBorder.x=mouseX;
+			mouseBorder.y=mouseY;
+			Mouse.hide();
+			for (i=0; i<nNumBalls; i++) {
+				if (mouseBorder.hitTestObject(arBalls[i])) {
+					if(pokeBall.alpha>0.99) {
+					trace("hit test");
+					}
+				}
+			}
 		}
 	}
+}

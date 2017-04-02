@@ -12,7 +12,7 @@ package {
 	import fl.controls.RadioButtonGroup;
 	import fl.controls.Label;
 
-	public class Game10 extends MovieClip {
+	public class Game11 extends MovieClip {
 		var rbgPokemon:RadioButtonGroup=new RadioButtonGroup("Pokemon");
 		var rbgControls:RadioButtonGroup=new RadioButtonGroup("Controls");
 		var rbgMode:RadioButtonGroup=new RadioButtonGroup("Mode");
@@ -64,7 +64,7 @@ package {
 		var arBalls:Array=new Array  ;
 		var i:int;
 		var nNumBalls:int=0;
-		var nMaxBalls:int=9;
+		var nMaxBalls:int;
 		var nWinBalls:int;
 		var nX:int;
 		var nY:int;
@@ -103,7 +103,7 @@ package {
 		var nSpawnInterval:int;
 		
 
-		public function Game10() {//main screen, everything is created in this function and moved out of the screen)
+		public function Game11() {//main screen, everything is created in this function and moved out of the screen)
 			loseScreen.x=600;
 			loseScreen.y=600;
 			loseScreen.width=550;
@@ -187,8 +187,8 @@ package {
 			rbSurvival.group=rbgMode;
 			addChild(rbSurvival);
 
-			rbClassic.enabled=false;//These are not implemented yet
-			rbSurvival.enabled=false;
+			//rbClassic.enabled=false;//These are not implemented yet
+			//rbSurvival.enabled=false;
 
 			rbNormal.move(600,600);
 			rbNormal.label="Normal";
@@ -598,6 +598,11 @@ package {
 			rbMouse.enabled=true;
 		}
 		function Game(e:MouseEvent):void {//start the game, move images and objects out and in
+			if(rbClassic.selected) {
+				nMaxBalls=9;
+			}else if(rbSurvival.selected) {
+				nMaxBalls=9999;
+			}
 
 			if(rbSingle.selected) {
 			nHealth=100;
@@ -679,7 +684,7 @@ package {
 			rbWASD.move(600,600);
 			rbMouse.move(600,600);
 
-			if (rbNormal.selected) {//Balls will spawn every 10 seconds
+			if (rbNormal.selected||rbSurvival.selected) {//Balls will spawn every 10 seconds
 				nSpawnInterval=10;
 			} else if (rbHard.selected) {//every 15
 				nSpawnInterval=15;
@@ -854,8 +859,10 @@ package {
 				if (rbTwo.selected) {
 				imgPokemon2.x=600;
 				imgPokemon2.y=600;
+				pokeBorder2.x=600;
+				pokeBorder2.y=600;
 				}
-				arBalls.splice(0,10);
+				arBalls.splice(0,nNumBalls);
 				nNumBalls=0;
 				loseScreen.x=0;
 				loseScreen.y=0;
@@ -864,8 +871,7 @@ package {
 				
 				pokeBorder.x=600;
 				pokeBorder.y=600;
-				pokeBorder2.x=600;
-				pokeBorder2.y=600;
+				
 				txtTimeRemaining.x=600;
 				txtTimeRemaining.y=600;
 				txtNumBalls.x=600;
@@ -900,6 +906,8 @@ package {
 				if (rbTwo.selected) {
 				imgPokemon2.x=600;
 				imgPokemon2.y=600;
+				pokeBorder2.x=600;
+				pokeBorder2.y=600;
 				}
 				arBalls.splice(0,10);
 				nNumBalls=0;
@@ -910,8 +918,7 @@ package {
 				
 				pokeBorder.x=600;
 				pokeBorder.y=600;
-				pokeBorder2.x=600;
-				pokeBorder2.y=600;
+				
 				txtTimeRemaining.x=600;
 				txtTimeRemaining.y=600;
 				txtNumBalls.x=600;

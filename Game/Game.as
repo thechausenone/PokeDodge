@@ -1,4 +1,5 @@
-﻿package {
+﻿
+package {
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.utils.*;
@@ -13,7 +14,7 @@
 	import fl.controls.CheckBox;
 	import fl.controls.Label;
 
-	public class Game7 extends MovieClip {
+	public class Game8 extends MovieClip {
 		var rbgPokemon:RadioButtonGroup=new RadioButtonGroup("Pokemon");
 		var rbgControls:RadioButtonGroup=new RadioButtonGroup("Controls");
 		var rbgMode:RadioButtonGroup=new RadioButtonGroup("Mode");
@@ -42,6 +43,8 @@
 		var btnBack:BtnBack = new BtnBack();
 		var btnBack2:BtnBack2 = new BtnBack2();
 		var btnPlay:BtnPlay = new BtnPlay();
+		var btnAgain:BtnAgain = new BtnAgain();
+		var btnMain:BtnMain = new BtnMain();
 		var dAnimVelX:Number=4;
 		var dAnimVelY:Number=4;
 		var tmrAnimMove:Timer=new Timer(25);
@@ -49,8 +52,8 @@
 		//var tmrInterval:Timer=new Timer(1000);
 		var titleScreen:TitleScreen = new TitleScreen();
 		var imgInstruction:ImgInstruction = new ImgInstruction();
-		var pokeBall:ImgPokeBall;
-		var masterBall:ImgMasterBall;
+		var imgPokeBall:ImgPokeBall;
+		var imgMasterBall:ImgMasterBall;
 		var animPokeBall:AnimPokeBall=new AnimPokeBall  ;
 		var imgCursor:ImgCursor = new ImgCursor();
 		var imgPikachu:ImgPikachu = new ImgPikachu();
@@ -69,22 +72,31 @@
 		var nRemainderY:int;
 		var mouseBorder:Sprite = new Sprite();
 		var tmrClock:Timer=new Timer(1000);
-		var nSec:int=20;
+		var nSec:int;
 		var txtTimeRemaining:TextField = new TextField();
 		var txtNumBalls:TextField = new TextField();
+		var txtHealth:TextField = new TextField();
 		var txtFormat:TextFormat = new TextFormat();
 		var newFont = new Font1();
 		var gameBackground:GameBackground = new GameBackground();
+		var loseScreen:LoseScreen = new LoseScreen();
+		var nHealth:int;
 
 
-		public function Game7() {
-			
+		public function Game8() {
+			loseScreen.x=600;
+			loseScreen.y=600;
+			loseScreen.width=550;
+			loseScreen.height=400;
+			addChild(loseScreen);
+
 			gameBackground.x=600;
 			gameBackground.y=600;
 			gameBackground.height=400;
 			gameBackground.width=550;
 			gameBackground.alpha=0.65;
 			addChild(gameBackground);
+
 
 			mouseBorder.graphics.lineStyle(1, 0x000000);
 			mouseBorder.graphics.drawCircle(0,0,15);
@@ -216,6 +228,14 @@
 			btnPlay.y=600;
 			addChild(btnPlay);
 
+			btnAgain.x=600;
+			btnAgain.y=600;
+			addChild(btnAgain);
+
+			btnMain.x=600;
+			btnMain.y=600;
+			addChild(btnMain);
+
 			imgCursor.x=600;
 			imgCursor.y=600;
 			imgCursor.width=40;
@@ -242,8 +262,8 @@
 			txtTimeRemaining.defaultTextFormat=txtFormat;
 			txtTimeRemaining.embedFonts=true;
 			txtTimeRemaining.antiAliasType=AntiAliasType.ADVANCED;
-			txtTimeRemaining.x=20;
-			txtTimeRemaining.y=20;
+			txtTimeRemaining.x=600;
+			txtTimeRemaining.y=600;
 			txtTimeRemaining.width=300;
 			txtTimeRemaining.textColor=0x0000FF;
 			addChild(txtTimeRemaining);
@@ -251,11 +271,22 @@
 			txtNumBalls.defaultTextFormat=txtFormat;
 			txtNumBalls.embedFonts=true;
 			txtNumBalls.antiAliasType=AntiAliasType.ADVANCED;
-			txtNumBalls.x=270;
-			txtNumBalls.y=20;
+			txtNumBalls.x=600;
+			txtNumBalls.y=600;
 			txtNumBalls.width=300;
 			txtNumBalls.textColor=0x0000FF;
 			addChild(txtNumBalls);
+
+			txtHealth.defaultTextFormat=txtFormat;
+			txtHealth.embedFonts=true;
+			txtHealth.antiAliasType=AntiAliasType.ADVANCED;
+			txtHealth.x=600;
+			txtHealth.y=600;
+			txtHealth.width=100;
+			txtHealth.textColor=0x00FF00;
+			addChild(txtHealth);
+
+
 
 			btnStart.btnOuter.addEventListener(MouseEvent.MOUSE_OVER, changeOver);//These event listeners make the button light up
 			btnStart.btnOuter.addEventListener(MouseEvent.MOUSE_OUT, changeOut);
@@ -271,7 +302,7 @@
 
 			btnBack.btnOuter.addEventListener(MouseEvent.MOUSE_OVER, changeOver);
 			btnBack.btnOuter.addEventListener(MouseEvent.MOUSE_OUT, changeOut);
-			btnBack.addEventListener(MouseEvent.CLICK, InstructToMain);
+			btnBack.addEventListener(MouseEvent.CLICK, Main);
 			btnBack.btnOuter.addEventListener(MouseEvent.MOUSE_DOWN, changeOut);
 			btnBack.btnOuter.addEventListener(MouseEvent.MOUSE_UP, changeOver);
 
@@ -286,6 +317,18 @@
 			btnPlay.addEventListener(MouseEvent.CLICK, Game);
 			btnPlay.btnOuter.addEventListener(MouseEvent.MOUSE_DOWN, changeOut);
 			btnPlay.btnOuter.addEventListener(MouseEvent.MOUSE_UP, changeOver);
+
+			btnAgain.btnOuter.addEventListener(MouseEvent.MOUSE_OVER, changeOver);
+			btnAgain.btnOuter.addEventListener(MouseEvent.MOUSE_OUT, changeOut);
+			btnAgain.addEventListener(MouseEvent.CLICK, Game);
+			btnAgain.btnOuter.addEventListener(MouseEvent.MOUSE_DOWN, changeOut);
+			btnAgain.btnOuter.addEventListener(MouseEvent.MOUSE_UP, changeOver);
+
+			btnMain.btnOuter.addEventListener(MouseEvent.MOUSE_OVER, changeOver);
+			btnMain.btnOuter.addEventListener(MouseEvent.MOUSE_OUT, changeOut);
+			btnMain.addEventListener(MouseEvent.CLICK, Main);
+			btnMain.btnOuter.addEventListener(MouseEvent.MOUSE_DOWN, changeOut);
+			btnMain.btnOuter.addEventListener(MouseEvent.MOUSE_UP, changeOver);
 
 		}
 		function Instructions(e:MouseEvent):void {
@@ -362,7 +405,14 @@
 			tmrAnimMove.addEventListener("timer", animationTimer);
 
 		}
-		function InstructToMain(e:MouseEvent):void {
+		function Main(e:MouseEvent):void {
+
+			stage.removeEventListener(Event.ENTER_FRAME, followmouse);
+			
+
+			loseScreen.x=600;
+			loseScreen.y=600;
+
 			imgInstruction.x=600;
 			imgInstruction.y=600;
 
@@ -371,6 +421,12 @@
 
 			btnBack.x=600;
 			btnBack.y=600;
+
+			btnMain.x=600;
+			btnMain.y=600;
+
+			btnAgain.x=600;
+			btnAgain.y=600;
 
 			titleScreen.x=0;
 			titleScreen.y=0;
@@ -459,10 +515,30 @@
 			tmrAnimMove.removeEventListener("timer", animationTimer);
 		}
 		function Game(e:MouseEvent):void {
-			
+
+			nHealth=100;
+
+			btnAgain.x=600;
+			btnAgain.y=600;
+
+			btnMain.x=600;
+			btnMain.y=600;
+
+			loseScreen.x=600;
+			loseScreen.y=600;
+
 			gameBackground.x=0;
 			gameBackground.y=0;
-			
+
+			txtTimeRemaining.x=20;
+			txtTimeRemaining.y=20;
+
+			txtNumBalls.x=350;
+			txtNumBalls.y=20;
+
+			txtHealth.x=235;
+			txtHealth.y=20;
+
 			imgPikachu.x=600;
 			imgPikachu.y=600;
 			imgPikachu.width=23.6;
@@ -508,6 +584,8 @@
 			rbInsane.move(600,600);
 			rbArrowKeys.move(600,600);
 			rbMouse.move(600,600);
+
+			nSec=20;
 
 			stage.addEventListener(Event.ENTER_FRAME, followmouse);
 
@@ -562,19 +640,19 @@
 				if (tmrSpawn.currentCount==1) {
 					nX=Math.random()*460+10;
 					nY=Math.random()*360+10;
-					pokeBall = new ImgPokeBall();
+					imgPokeBall = new ImgPokeBall();
 
-					pokeBall.height=30;
-					pokeBall.width=30;
-					pokeBall.x=nX;
-					pokeBall.y=nY;
-					addChild(pokeBall);
+					imgPokeBall.height=30;
+					imgPokeBall.width=30;
+					imgPokeBall.x=nX;
+					imgPokeBall.y=nY;
+					addChild(imgPokeBall);
 
-					arBalls.push(pokeBall);
+					arBalls.push(imgPokeBall);
 
 
 					nNumBalls++;
-					addChild(arBalls[i]);
+					addChild(arBalls[i]);//Do we even need?
 					i++;
 
 
@@ -587,13 +665,13 @@
 
 					nX=Math.random()*460+10;
 					nY=Math.random()*360+10;
-					masterBall = new ImgMasterBall();
-					masterBall.width=30;
-					masterBall.height=30;
-					masterBall.x=nX;
-					masterBall.y=nY;
-					addChild(masterBall);
-					arBalls.push(masterBall);
+					imgMasterBall = new ImgMasterBall();
+					imgMasterBall.width=30;
+					imgMasterBall.height=30;
+					imgMasterBall.x=nX;
+					imgMasterBall.y=nY;
+					addChild(imgMasterBall);
+					arBalls.push(imgMasterBall);
 					nNumBalls++;
 					trace(nNumBalls);
 					addChild(arBalls[i]);
@@ -612,14 +690,15 @@
 		}
 		public function timerClock(e:TimerEvent):void {//Shows the time until the next ball spawns, also shows how many balls are on the stage
 			trace(tmrClock.currentCount);
-			txtNumBalls.text="Number of balls spawned: "+String(nNumBalls);
+			txtNumBalls.text="# of balls spawned: "+String(nNumBalls);
+			txtHealth.text="Health: "+String(nHealth);
 			nSec--;
-			if(nNumBalls<10) {
-			txtTimeRemaining.text="Time until next ball: "+String(nSec);
-			if (nSec==0) {
-				nSec=20;
-			}
-			} else if(nNumBalls==10) {
+			if (nNumBalls<10) {
+				txtTimeRemaining.text="Time until next ball: "+String(nSec);
+				if (nSec==0) {
+					nSec=20;
+				}
+			} else if (nNumBalls==10) {
 				txtTimeRemaining.text="Time until win: "+String(nSec);
 			}
 		}
@@ -631,11 +710,49 @@
 			Mouse.hide();
 			for (i=0; i<nNumBalls; i++) {
 				if (mouseBorder.hitTestObject(arBalls[i])) {
-					if(pokeBall.alpha>0.99) {
-					trace("hit test");
+					if (imgPokeBall.pokeBall.alpha>0.99) {//So that you can't die while the ball is fading in
+						nHealth-=5;
+						txtHealth.textColor=0xFF0000;
 					}
+
+
+				} else {
+					txtHealth.textColor=0x006600;
 				}
 			}
+			if (nHealth<1) {
+				for (i=0; i<nNumBalls; i++) {
+					removeChild(arBalls[i]);
+				}
+				arBalls.splice(0, 10);
+				nNumBalls=0;
+				loseScreen.x=0;
+				loseScreen.y=0;
+				imgPikachu.x=600;
+				imgPikachu.y=600;
+				mouseBorder.x=600;
+				mouseBorder.y=600;
+				txtTimeRemaining.x=600;
+				txtTimeRemaining.y=600;
+				txtNumBalls.x=600;
+				txtNumBalls.y=600;
+				txtHealth.x=600;
+				txtHealth.y=600;
+				gameBackground.x=600;
+				gameBackground.y=600;
+				btnAgain.x=25;
+				btnAgain.y=360;
+				btnMain.x=325;
+				btnMain.y=360;
+				Mouse.show();
+
+				tmrClock.reset();
+				tmrSpawn.reset();
+				tmrClock.removeEventListener("timer", timerClock);
+				tmrSpawn.removeEventListener("timer", spawningTimer);
+			}
+
 		}
 	}
+
 }

@@ -13,7 +13,7 @@
 	import fl.controls.CheckBox;
 	import fl.controls.Label;
 
-	public class Game3 extends MovieClip {
+	public class Game4 extends MovieClip {
 		var rbgPokemon:RadioButtonGroup=new RadioButtonGroup("Pokemon");
 		var rbgControls:RadioButtonGroup=new RadioButtonGroup("Controls");
 		var rbgMode:RadioButtonGroup=new RadioButtonGroup("Mode");
@@ -45,18 +45,58 @@
 		var dAnimVelX:Number=4;
 		var dAnimVelY:Number=4;
 		var tmrAnimMove:Timer=new Timer(25);
+		var tmrSpawn:Timer=new Timer(50);
+		var tmrInterval:Timer = new Timer(1000);
 		var titleScreen:TitleScreen = new TitleScreen();
 		var imgInstruction:ImgInstruction = new ImgInstruction();
 		var pokeBall:PokeBall = new PokeBall();
+		var animPokeBall:AnimPokeBall=new AnimPokeBall  ;
 		var imgCursor:ImgCursor = new ImgCursor();
 		var imgPikachu:ImgPikachu = new ImgPikachu();
 		var imgOnix:ImgOnix = new ImgOnix();
 		var imgTogepi:ImgTogepi = new ImgTogepi();
 		var imgMouse:ImgMouse = new ImgMouse();
 		var imgKeys:ImgKeys = new ImgKeys();
+		var arBalls:Array = new Array();
+		var arHorizBorders:Array = new Array();
+		var arVerticBorders:Array = new Array();
+		var border:Sprite = new Sprite();
+		var i:int;
+		var j:int;
+		var nNumBalls:int;
+		var nX:int;
+		var nY:int;
+		var dVelX:int;
+		var dVelY:int;
 
-		public function Game3() {
+		public function Game4() {
 
+			border.graphics.lineStyle(2, 0x000000);
+			border.graphics.moveTo(0,0);
+			border.graphics.lineTo(550,0);
+			addChild(border);
+			arHorizBorders.push(border);
+
+			border = new Sprite();
+			border.graphics.lineStyle(2, 0x000000);
+			border.graphics.moveTo(550,0);
+			border.graphics.lineTo(550,400);
+			addChild(border);
+			arVerticBorders.push(border);
+
+			border = new Sprite();
+			border.graphics.lineStyle(2, 0x000000);
+			border.graphics.moveTo(0,400);
+			border.graphics.lineTo(550,400);
+			addChild(border);
+			arHorizBorders.push(border);
+
+			border = new Sprite();
+			border.graphics.lineStyle(2, 0x000000);
+			border.graphics.moveTo(0,0);
+			border.graphics.lineTo(0,400);
+			addChild(border);
+			arVerticBorders.push(border);
 
 			rbPikachu.move(600, 600);
 			rbPikachu.label="Pikachu";
@@ -117,25 +157,25 @@
 			rbHard.label="Hard";
 			rbHard.group=rbgDifficulty;
 			addChild(rbHard);
-			
+
 			lblPokemon.move(600,600);
 			lblPokemon.text="Choose Your Pokemon!";
 			lblPokemon.width=150;
 			addChild(lblPokemon);
-			
+
 			lblControls.move(600,600);
 			lblControls.text="Keyboard or Mouse?";
 			lblControls.width=150;
 			addChild(lblControls);
-			
+
 			lblMode.move(600,600);
 			lblMode.text="Mode";
 			addChild(lblMode);
-			
+
 			lblDifficulty.move(600,600);
 			lblDifficulty.text="Difficulty";
 			addChild(lblDifficulty);
-			
+
 			lblPlayers.move(600,600);
 			lblPlayers.text="# of Players";
 			addChild(lblPlayers);
@@ -173,11 +213,11 @@
 			btnBack.x=600;
 			btnBack.y=600;
 			addChild(btnBack);
-			
+
 			btnBack2.x=600;
 			btnBack2.y=600;
 			addChild(btnBack2);
-			
+
 			btnPlay.x=600;
 			btnPlay.y=600;
 			addChild(btnPlay);
@@ -190,18 +230,18 @@
 
 			imgMouse.x=600;
 			imgMouse.y=600;
-			
+
 			addChild(imgMouse);
 
 			imgKeys.x=600;
 			imgKeys.y=600;
 			addChild(imgKeys);
 
-			pokeBall.x=600;
-			pokeBall.y=600;
-			pokeBall.width=40;
-			pokeBall.height=40;
-			addChild(pokeBall);
+			animPokeBall.x=600;
+			animPokeBall.y=600;
+			animPokeBall.width=40;
+			animPokeBall.height=40;
+			addChild(animPokeBall);
 
 			btnStart.btnOuter.addEventListener(MouseEvent.MOUSE_OVER, changeOver);//These event listeners make the button light up
 			btnStart.btnOuter.addEventListener(MouseEvent.MOUSE_OUT, changeOut);
@@ -220,7 +260,7 @@
 			btnBack.addEventListener(MouseEvent.CLICK, InstructToMain);
 			btnBack.btnOuter.addEventListener(MouseEvent.MOUSE_DOWN, changeOut);
 			btnBack.btnOuter.addEventListener(MouseEvent.MOUSE_UP, changeOver);
-			
+
 			btnBack2.btnOuter.addEventListener(MouseEvent.MOUSE_OVER, changeOver);
 			btnBack2.btnOuter.addEventListener(MouseEvent.MOUSE_OUT, changeOut);
 			btnBack2.addEventListener(MouseEvent.CLICK, Instructions);
@@ -241,28 +281,28 @@
 
 			btnStart.x=600;
 			btnStart.y=600;
-			
+
 			btnBack2.x=600;
 			btnBack2.y=600;
-			
+
 			btnPlay.x=600;
 			btnPlay.y=600;
-			
+
 			imgPikachu.x=600;
 			imgPikachu.y=600;
-			
+
 			imgOnix.x=600;
 			imgOnix.y=600;
-			
+
 			imgTogepi.x=600;
 			imgTogepi.y=600;
-			
+
 			imgMouse.x=600;
 			imgMouse.y=600;
-			
+
 			imgKeys.x=600;
 			imgKeys.y=600;
-			
+
 			rbPikachu.move(600,600);
 			rbOnix.move(600,600);
 			rbTogepi.move(600,600);
@@ -275,13 +315,13 @@
 			rbHard.move(600,600);
 			rbMouse.move(600,600);
 			rbArrowKeys.move(600,600);
-			
+
 			lblPokemon.move(600,600);
 			lblPlayers.move(600,600);
 			lblMode.move(600,600);
 			lblDifficulty.move(600,600);
 			lblControls.move(600,600);
-			
+
 
 			imgInstruction.x=10;
 			imgInstruction.y=10;
@@ -289,8 +329,8 @@
 			btnNext.x=325;
 			btnNext.y=360;
 
-			pokeBall.x=450;
-			pokeBall.y=45;
+			animPokeBall.x=450;
+			animPokeBall.y=45;
 
 			imgCursor.x=400;
 			imgCursor.y=100;
@@ -305,7 +345,7 @@
 			dAnimVelY=4;
 			tmrAnimMove.reset();
 			tmrAnimMove.start();
-			tmrAnimMove.addEventListener("timer", timerFunction);
+			tmrAnimMove.addEventListener("timer", animationTimer);
 
 		}
 		function InstructToMain(e:MouseEvent):void {
@@ -324,8 +364,8 @@
 			imgCursor.x=600;
 			imgCursor.y=600;
 
-			pokeBall.x=600;
-			pokeBall.y=600;
+			animPokeBall.x=600;
+			animPokeBall.y=600;
 
 			btnStart.x=175;
 			btnStart.y=350;
@@ -333,7 +373,7 @@
 			profOak.x=600;
 			profOak.y=600;
 
-			tmrAnimMove.removeEventListener("timer", timerFunction);
+			tmrAnimMove.removeEventListener("timer", animationTimer);
 
 
 		}
@@ -347,8 +387,8 @@
 			imgCursor.x=600;
 			imgCursor.y=600;
 
-			pokeBall.x=600;
-			pokeBall.y=600;
+			animPokeBall.x=600;
+			animPokeBall.y=600;
 
 			btnBack.x=600;
 			btnBack.y=600;
@@ -370,15 +410,15 @@
 
 			imgKeys.x=375;
 			imgKeys.y=155;
-			
+
 			btnBack2.x=25;
 			btnBack2.y=360;
-			
+
 			btnPlay.x=325;
 			btnPlay.y=360;
-			
+
 			lblPokemon.move(40,110);
-			lblPlayers.move(60,20); 
+			lblPlayers.move(60,20);
 			lblMode.move(260,20);
 			lblDifficulty.move(385,20);
 			lblControls.move(320, 130);
@@ -396,8 +436,9 @@
 			rbArrowKeys.move(355,155);
 			rbMouse.move(240,155);
 
-			tmrAnimMove.removeEventListener("timer", timerFunction);
-		} function Game(e:MouseEvent):void {
+			tmrAnimMove.removeEventListener("timer", animationTimer);
+		}
+		function Game(e:MouseEvent):void {
 			imgPikachu.x=600;
 			imgPikachu.y=600;
 
@@ -412,15 +453,15 @@
 
 			imgKeys.x=600;
 			imgKeys.y=600;
-			
+
 			btnBack2.x=600;
 			btnBack2.y=600;
-			
+
 			btnPlay.x=600;
 			btnPlay.y=600;
-			
+
 			lblPokemon.move(600,600);
-			lblPlayers.move(600,600); 
+			lblPlayers.move(600,600);
 			lblMode.move(600,600);
 			lblDifficulty.move(600,600);
 			lblControls.move(600, 600);
@@ -438,9 +479,16 @@
 			rbArrowKeys.move(600,600);
 			rbMouse.move(600,600);
 
+			tmrSpawn.start();
 
-		}function changeOver(e:MouseEvent):void {
-			trace(e.target);
+			tmrSpawn.addEventListener("timer", timerFunction);
+			tmrInterval.start();
+			tmrInterval.addEventListener("timer", test);
+
+
+		}
+		function changeOver(e:MouseEvent):void {
+
 			e.target.transform.colorTransform=new ColorTransform(0,0,0,1,79,91,255,-1);//Ben taught us aboout e.target
 
 		}
@@ -448,9 +496,9 @@
 			e.target.transform.colorTransform=new ColorTransform(0,0,0,1,0,0,255,-1);
 
 		}
-		function timerFunction(event:TimerEvent):void {
-			pokeBall.x-=1.5;
-			pokeBall.y+=1.5;
+		function animationTimer(event:TimerEvent):void {
+			animPokeBall.x-=1.5;
+			animPokeBall.y+=1.5;
 
 			imgCursor.x-=dAnimVelX;
 			imgCursor.y-=dAnimVelY;
@@ -460,8 +508,8 @@
 				dAnimVelY=0;
 
 			} else if (tmrAnimMove.currentCount == 60) {
-				pokeBall.x=450;
-				pokeBall.y=45;
+				animPokeBall.x=450;
+				animPokeBall.y=45;
 
 				imgCursor.x=400;
 				imgCursor.y=100;
@@ -472,6 +520,48 @@
 				tmrAnimMove.reset();
 				tmrAnimMove.start();
 			}
+		}function test (e:TimerEvent):void {
+		trace(tmrInterval.currentCount);
 		}
+		public function timerFunction(e:TimerEvent):void {
+			trace(tmrSpawn.currentCount);
+			i=0;
+			nNumBalls=0;
+			if (nNumBalls<10) {
+				if (tmrSpawn.currentCount==1) {
+					nX=Math.random()*460+10;
+					nY=Math.random()*360+10;
+					pokeBall = new PokeBall();
+					pokeBall.height=30;
+					pokeBall.width=30;
+					pokeBall.x=nX;
+					pokeBall.y=nY;
+					pokeBall.alpha=0;
+					addChild(pokeBall);
+
+					arBalls.push(pokeBall);
+
+					nNumBalls++;
+					addChild(arBalls[i]);
+					i++;
+					trace(nX);
+					trace(nY);
+				}
+				if (tmrInterval.currentCount==20) {//For an exact 20 seconds, since working with the 50 milliseconds doesn't work well
+					tmrSpawn.reset();
+					tmrSpawn.start();
+					tmrInterval.reset();
+					tmrInterval.start();
+				}
+			}
+
+			if (pokeBall.alpha<1) {
+				if (tmrSpawn.currentCount>15) {
+					pokeBall.alpha+=0.05;
+				}
+			}
+
+		}
+		
 	}
 }

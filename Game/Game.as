@@ -5,7 +5,6 @@ package {
 	import flash.utils.*;
 	import flash.events.*;
 	import flash.ui.Mouse;
-	import flash.display.Bitmap;
 	import flash.events.MouseEvent;
 	import flash.text.*;
 	import flash.geom.ColorTransform;
@@ -14,7 +13,7 @@ package {
 	import fl.controls.CheckBox;
 	import fl.controls.Label;
 
-	public class Game8 extends MovieClip {
+	public class Game9 extends MovieClip {
 		var rbgPokemon:RadioButtonGroup=new RadioButtonGroup("Pokemon");
 		var rbgControls:RadioButtonGroup=new RadioButtonGroup("Controls");
 		var rbgMode:RadioButtonGroup=new RadioButtonGroup("Mode");
@@ -49,7 +48,6 @@ package {
 		var dAnimVelY:Number=4;
 		var tmrAnimMove:Timer=new Timer(25);
 		var tmrSpawn:Timer=new Timer(50);
-		//var tmrInterval:Timer=new Timer(1000);
 		var titleScreen:TitleScreen = new TitleScreen();
 		var imgInstruction:ImgInstruction = new ImgInstruction();
 		var imgPokeBall:ImgPokeBall;
@@ -80,15 +78,23 @@ package {
 		var newFont = new Font1();
 		var gameBackground:GameBackground = new GameBackground();
 		var loseScreen:LoseScreen = new LoseScreen();
+		var winScreen:WinScreen = new WinScreen();
 		var nHealth:int;
+		var imgPokemon;
 
 
-		public function Game8() {
+		public function Game9() {
 			loseScreen.x=600;
 			loseScreen.y=600;
 			loseScreen.width=550;
 			loseScreen.height=400;
 			addChild(loseScreen);
+			
+			winScreen.x=600;
+			winScreen.y=600;
+			winScreen.width=550;
+			winScreen.height=400;
+			addChild(winScreen);
 
 			gameBackground.x=600;
 			gameBackground.y=600;
@@ -406,9 +412,9 @@ package {
 
 		}
 		function Main(e:MouseEvent):void {
-
-			stage.removeEventListener(Event.ENTER_FRAME, followmouse);
 			
+			winScreen.x=600;
+			winScreen.y=600;
 
 			loseScreen.x=600;
 			loseScreen.y=600;
@@ -526,6 +532,9 @@ package {
 
 			loseScreen.x=600;
 			loseScreen.y=600;
+			
+			winScreen.x=600;
+			winScreen.y=600;
 
 			gameBackground.x=0;
 			gameBackground.y=0;
@@ -595,7 +604,8 @@ package {
 
 			tmrSpawn.addEventListener("timer", spawningTimer);
 			tmrSpawn.start();
-
+			
+			
 
 		}
 		function changeOver(e:MouseEvent):void {
@@ -661,7 +671,7 @@ package {
 			}
 			if (nNumBalls==9) {
 
-				if (tmrClock.currentCount==20) {// The 10th ball will spawn the "Master Ball"
+				if (tmrClock.currentCount==4) {// The 10th ball will spawn the "Master Ball"
 
 					nX=Math.random()*460+10;
 					nY=Math.random()*360+10;
@@ -678,7 +688,7 @@ package {
 					i++;
 				}
 			}
-			if (tmrClock.currentCount==20) {//For an exact 20 seconds, since working with the 50 milliseconds doesn't work well
+			if (tmrClock.currentCount==4) {//For an exact 20 seconds, since working with the 50 milliseconds doesn't work well
 
 				tmrSpawn.reset();
 				tmrSpawn.start();
@@ -690,16 +700,19 @@ package {
 		}
 		public function timerClock(e:TimerEvent):void {//Shows the time until the next ball spawns, also shows how many balls are on the stage
 			trace(tmrClock.currentCount);
+			trace(nNumBalls+"balls");
 			txtNumBalls.text="# of balls spawned: "+String(nNumBalls);
 			txtHealth.text="Health: "+String(nHealth);
 			nSec--;
-			if (nNumBalls<10) {
-				txtTimeRemaining.text="Time until next ball: "+String(nSec);
-				if (nSec==0) {
+			if (nSec==0) {
 					nSec=20;
 				}
+			if (nNumBalls<10) {
+				txtTimeRemaining.text="Time until next ball: "+String(nSec);
+				
 			} else if (nNumBalls==10) {
 				txtTimeRemaining.text="Time until win: "+String(nSec);
+				
 			}
 		}
 		function followmouse(e:Event):void {//images follow mouse, hit test
@@ -713,14 +726,14 @@ package {
 					if (imgPokeBall.pokeBall.alpha>0.99) {//So that you can't die while the ball is fading in
 						nHealth-=5;
 						txtHealth.textColor=0xFF0000;
+						trace("test");
 					}
 
 
 				} else {
 					txtHealth.textColor=0x006600;
 				}
-			}
-			if (nHealth<1) {
+			}if (nHealth<1) {
 				for (i=0; i<nNumBalls; i++) {
 					removeChild(arBalls[i]);
 				}
@@ -750,7 +763,41 @@ package {
 				tmrSpawn.reset();
 				tmrClock.removeEventListener("timer", timerClock);
 				tmrSpawn.removeEventListener("timer", spawningTimer);
+				stage.removeEventListener(Event.ENTER_FRAME, followmouse);
+			}if(nNumBalls==10&&tmrClock.currentCount==4) {
+				for (i=0; i<nNumBalls; i++) {
+					removeChild(arBalls[i]);
+				}
+				
+				arBalls.splice(0, 10);
+				nNumBalls=0;
+				winScreen.x=0;
+				winScreen.y=0;
+				imgPikachu.x=600;
+				imgPikachu.y=600;
+				mouseBorder.x=600;
+				mouseBorder.y=600;
+				txtTimeRemaining.x=600;
+				txtTimeRemaining.y=600;
+				txtNumBalls.x=600;
+				txtNumBalls.y=600;
+				txtHealth.x=600;
+				txtHealth.y=600;
+				gameBackground.x=600;
+				gameBackground.y=600;
+				btnAgain.x=25;
+				btnAgain.y=360;
+				btnMain.x=325;
+				btnMain.y=360;
+				Mouse.show();
+
+				tmrClock.reset();
+				tmrSpawn.reset();
+				tmrClock.removeEventListener("timer", timerClock);
+				tmrSpawn.removeEventListener("timer", spawningTimer);
+				stage.removeEventListener(Event.ENTER_FRAME, followmouse);
 			}
+			
 
 		}
 	}

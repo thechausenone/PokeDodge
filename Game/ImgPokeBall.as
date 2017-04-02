@@ -4,7 +4,6 @@
 	import flash.utils.*;
 	import flash.events.*;
 	import flash.ui.Mouse;
-	import flash.display.Bitmap;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 
@@ -17,17 +16,16 @@
 		var tmrAlpha:Timer=new Timer(50);
 		var tmrInterval:Timer=new Timer(1000);
 		var tmrMove:Timer = new Timer(35);
-		var dSpeed:Number;
+		var dSpeed:Number=0;
 
-		public function ImgPokeBall() {
-
+		public function ImgPokeBall(_dSpeed:int) {
+			dSpeed=_dSpeed;
 			nRemainderX=Math.random()*100%2;
 			nRemainderY=Math.random()*100%2;
 
 			addChild(pokeBall);
 			pokeBall.alpha=0;
 			
-			dSpeed=5;
 			
 			tmrAlpha.start();
 			tmrAlpha.addEventListener("timer", changeAlpha);

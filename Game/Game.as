@@ -13,7 +13,7 @@
 	import fl.controls.CheckBox;
 	import fl.controls.Label;
 
-	public class Game4 extends MovieClip {
+	public class Game5 extends MovieClip {
 		var rbgPokemon:RadioButtonGroup=new RadioButtonGroup("Pokemon");
 		var rbgControls:RadioButtonGroup=new RadioButtonGroup("Controls");
 		var rbgMode:RadioButtonGroup=new RadioButtonGroup("Mode");
@@ -46,7 +46,7 @@
 		var dAnimVelY:Number=4;
 		var tmrAnimMove:Timer=new Timer(25);
 		var tmrSpawn:Timer=new Timer(50);
-		var tmrInterval:Timer = new Timer(1000);
+		var tmrInterval:Timer=new Timer(1000);
 		var titleScreen:TitleScreen = new TitleScreen();
 		var imgInstruction:ImgInstruction = new ImgInstruction();
 		var pokeBall:PokeBall = new PokeBall();
@@ -58,45 +58,17 @@
 		var imgMouse:ImgMouse = new ImgMouse();
 		var imgKeys:ImgKeys = new ImgKeys();
 		var arBalls:Array = new Array();
-		var arHorizBorders:Array = new Array();
-		var arVerticBorders:Array = new Array();
-		var border:Sprite = new Sprite();
 		var i:int;
-		var j:int;
 		var nNumBalls:int;
 		var nX:int;
 		var nY:int;
-		var dVelX:int;
-		var dVelY:int;
+		var dVelX:Number;
+		var dVelY:Number;
+		var nRemainderX:int;
+		var nRemainderY:int;
 
-		public function Game4() {
 
-			border.graphics.lineStyle(2, 0x000000);
-			border.graphics.moveTo(0,0);
-			border.graphics.lineTo(550,0);
-			addChild(border);
-			arHorizBorders.push(border);
-
-			border = new Sprite();
-			border.graphics.lineStyle(2, 0x000000);
-			border.graphics.moveTo(550,0);
-			border.graphics.lineTo(550,400);
-			addChild(border);
-			arVerticBorders.push(border);
-
-			border = new Sprite();
-			border.graphics.lineStyle(2, 0x000000);
-			border.graphics.moveTo(0,400);
-			border.graphics.lineTo(550,400);
-			addChild(border);
-			arHorizBorders.push(border);
-
-			border = new Sprite();
-			border.graphics.lineStyle(2, 0x000000);
-			border.graphics.moveTo(0,0);
-			border.graphics.lineTo(0,400);
-			addChild(border);
-			arVerticBorders.push(border);
+		public function Game5() {
 
 			rbPikachu.move(600, 600);
 			rbPikachu.label="Pikachu";
@@ -520,11 +492,12 @@
 				tmrAnimMove.reset();
 				tmrAnimMove.start();
 			}
-		}function test (e:TimerEvent):void {
-		trace(tmrInterval.currentCount);
+		}
+		function test(e:TimerEvent):void {
+			//trace(tmrInterval.currentCount);
 		}
 		public function timerFunction(e:TimerEvent):void {
-			trace(tmrSpawn.currentCount);
+			//trace(tmrSpawn.currentCount);
 			i=0;
 			nNumBalls=0;
 			if (nNumBalls<10) {
@@ -540,12 +513,27 @@
 					addChild(pokeBall);
 
 					arBalls.push(pokeBall);
+					pokeBall.addEventListener(Event.ENTER_FRAME, moveball);
 
 					nNumBalls++;
 					addChild(arBalls[i]);
 					i++;
 					trace(nX);
 					trace(nY);
+					nRemainderX=Math.random()*100%2;
+					nRemainderY=Math.random()*100%2;
+					trace(nRemainderX);
+					if (nRemainderX==0) {
+						dVelX=5;
+					} else {
+						dVelX=-5;
+					}
+					if (nRemainderY==0) {
+						dVelY=5;
+					} else {
+						dVelY=-5;
+					}
+
 				}
 				if (tmrInterval.currentCount==20) {//For an exact 20 seconds, since working with the 50 milliseconds doesn't work well
 					tmrSpawn.reset();
@@ -562,6 +550,13 @@
 			}
 
 		}
-		
+		function moveball(e:Event):void {
+				if (pokeBall.alpha>0.99) {//We'll have to change the way we move the balls for future releases
+
+					pokeBall.x+=dVelX;
+					pokeBall.y+=dVelY;
+				
+			}
+		}
 	}
 }
